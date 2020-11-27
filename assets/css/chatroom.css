@@ -1,0 +1,211 @@
+.chat-pan{
+    width: 100vw;
+    height: 100vh;
+    max-width: 100vw;
+    max-height: 100vh;
+    overflow: hidden;
+}
+
+.chat-header{
+    width: 100%;
+    height: 80px;
+    min-height: 80px;
+}
+.chat-menu{
+    width: 100%;
+    height: 50px;
+    min-height: 50px;
+    border: 1px solid #dfdfdf;
+}
+.chat-container{
+    height: calc(100vh - 80px);
+    width: 100%;
+}
+.chat-container .users, .chat-container .tabs{
+    height: 100%;
+    max-height: 100%;
+    float: left;
+} 
+.chat-container .tabs{
+    width: 25vw;
+}
+
+.chat-container .users{
+    width: 20vw;
+}
+
+.chat-container .chat-pan{
+    width: 55vw;
+    height: 100%;
+    max-height: 100%;
+    border-left: 1px solid #dfdfdf;
+    border-right: 1px solid #dfdfdf;
+    float: left;
+}
+
+.chat-container .chat-pan .chat{
+    width: 100%;
+    height: calc(100% - 70px);
+    max-height: calc(100% - 70px);
+    border-bottom: 1px solid #dfdfdf;
+    float: left;
+}
+
+.chat-container .chat-pan .send{
+    width: 100%;
+    height: 70px;
+    max-height: 70px;
+    border-bottom: 1px solid #dfdfdf;
+    float: left;
+}
+
+.dismiss{
+    color: gray;
+    width: 20px;
+    cursor: pointer;
+    text-align: center;
+}
+.dismiss:hover{
+    color: #0070f3;
+}
+
+.tabs .user-search{
+    height: 10px;
+    width: 100%;
+}
+
+.admin .state{
+    background-color: #ce00f3;
+}
+.logged-in .state{
+    background-color: #0070f3;
+}
+.logged-out .state{
+    background-color: #646f79;
+}
+.tabs .user-list{
+    width: 100%;
+    height: calc(100% - 10px);
+    overflow-y: scroll;
+}
+.tabs .user-list .tab-item{
+    height: 64px;
+    width: 100%;
+    padding: 8px;
+    border-bottom: 1px solid #dfdfdf;
+    cursor: pointer;
+}
+.tabs .user-list .tab-item:hover{
+    background-color: #e2edfb;
+}
+.tabs .user-list .tab-item.active{
+    padding-right: 4px;
+    border-right: 4px solid #0070f3;
+    background-color: #e2edfb;
+}
+.tabs .user-list .tab-item:first-child{
+    border-top: 1px solid #dfdfdf;
+}
+.tabs .user-list  .tab-item .state, .tabs .tab-item .content{
+    float: left;
+}
+.tabs .user-list  .tab-item .state{
+    width: 47px;
+    height: 47px;
+    border-radius: 50px;
+    background-image: url(../icons/user.svg);
+    background-size: 32px 32px;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+.tabs .user-list  .tab-item .content{
+    width: calc(100% - 47px);
+    height: 47px;
+}
+
+.tabs .user-list .tab-item .content .name{
+    width: 100%;
+    height: 25px;
+    line-height: 25px;
+    font-size: 20px;
+    font-weight: 500;
+    padding-left: 4px;
+}
+.tabs .user-list .tab-item .content .last-message{
+    width: 100%;
+    height: 18px;
+    line-height: 18px;
+    font-size: 15px;
+    padding-left: 4px;
+    color: gray;
+}
+.tabs .user-list .tab-item .content .last-message .new-message-count{
+    margin-right: 6px;
+}
+
+.chat .chat-list{
+    max-height: 100%;
+    overflow-y: scroll;
+}
+.chat-list .chat-item{
+    max-width: 100%;
+    margin: 15px;
+
+}
+
+.chat-list .chat-item .name-time{
+    text-align: left;
+}
+.chat-list .chat-item .name-time{
+    font-size: 12px;
+    color: gray;
+}
+.chat-list .chat-item.other-user .name-time{
+    text-align: left;
+    padding-left: 10px;
+}
+
+.chat-list .chat-item.your-message .name-time{
+    text-align: right;
+    padding-right: 10px;
+}
+
+.chat-list .chat-item .message{
+    padding:8px 16px;
+    line-height: 18px;
+    font-size: 14px;
+}
+.chat-list .chat-item.other-user .message{
+    margin-right: 30%;
+    background-color: #d6e9ff;
+    border-radius: 0 8px 8px 8px;
+}
+
+.chat-list .chat-item.your-message .message{
+    margin-left: 30%;
+    background-color: #a9d1ff;
+    border-radius: 8px 0 8px 8px;
+}
+
+.send .message-sender{
+    margin: 8px;
+}
+.form-control:focus{
+  box-shadow: none;
+}
+.users .all-user-list{
+    max-height: calc(100% - 48px);
+    overflow-y: scroll;
+}
+.users .all-user-list .list-group-item{
+    padding:8px;
+    font-size: 16px;
+}
+.users .list-group .list-group-item:last-child{
+    border-bottom: 1px solid rgba(0,0,0,.125);
+}
+.users .list-group .list-group-item.active{
+    background-color: #e2edfb;
+    color: black;
+    border-color: rgba(0,0,0,.125);
+}

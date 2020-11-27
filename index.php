@@ -1,22 +1,33 @@
-<<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8">
-        <title>Chat Room</title>
-        <meta name="keyword" content="chat room">
-        <meta name="description" content="chat room">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="./assets/css/bootstrap.min.css">
-        <link rel="stylesheet" href="./assets/css/chat_room.css">
-    </head>
-    <body>
-        
+<?php
+    include './template/header.php';
+?>
 
-        <script src="./assets/js/jquery-3.2.1.min.js"></script>
-        <script src="./assets/js/bootstrap.min.js"></script>
-        <script src="./assets/js/chatroom.js"></script>
-    </body>
-</html>
+<div class="container-login100">
+    <div class="wrap-login100 p-t-35 p-b-20">
+        <form class="login100-form validate-form">
+            <h2 class="m-t-20 m-b-20" style="text-align:center;">Log in</h2>
+            <div class="wrap-input100 validate-input m-t-15 m-b-35" data-validate="Enter username">
+                <input class="input100" type="text" name="username">
+                <span class="focus-input100" data-placeholder="User Name"></span>
+            </div>
+            <div class="wrap-input100 validate-input m-b-50" data-validate="Enter Age">
+                <input class="input100" type="number" min="1" max="150" name="pass">
+                <span class="focus-input100" data-placeholder="Age"></span>
+            </div>
+            <div class="wrap-input100 m-b-50" style="border:none;">
+                <label class="radio-inline"><input type="radio" name="optradio" checked>Male</label>
+                <label class="radio-inline"><input type="radio" name="optradio">Female</label>
+            </div>
+            <div class="container-login100-form-btn">
+            <button class="login100-form-btn">Login</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<?php
+    include './template/footer.php';
+?>
 
 <?php
 
