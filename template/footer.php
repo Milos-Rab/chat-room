@@ -3,9 +3,17 @@
 
 <script src="./assets/js/jquery-3.2.1.min.js"></script>
 <script src="./assets/js/bootstrap.min.js"></script>
+<?php
+    if($page==='index/login'){
+?>
 <script src="./assets/js/loginformvalidate.js"></script>
-<script src="./assets/js/chatroom.js"></script>
-
+<?php 
+    }else if($page){
+?>
+    <script src="./assets/js/chatroom.js"></script>
+<?php
+    }
+?>
 <script>
 	  window.dataLayer = window.dataLayer || [];
 	  function gtag(){dataLayer.push(arguments);}

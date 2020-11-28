@@ -1,5 +1,9 @@
 <?php
+    session_start();
+
     include './template/header.php';
+    
+    $page = "chatroom";
 ?>
 
 <div class="chat-container">
@@ -10,7 +14,7 @@
                 <div class="state"></div>
                 <div class="content">
                     <div class="name  d-flex justify-content-between">
-                        <sapn class="name">Mike</sapn>
+                        <span class="name">Mike</span>
                         <span class="dismiss">x</span>
                     </div>
                     <div class="last-message d-flex justify-content-between">
@@ -23,7 +27,7 @@
                 <div class="state"></div>
                 <div class="content">
                     <div class="name  d-flex justify-content-between">
-                        <sapn class="name">Mike</sapn>
+                        <span class="name">Mike</span>
                         <span class="dismiss">x</span>
                     </div>
                     <div class="last-message d-flex justify-content-between">
@@ -36,7 +40,7 @@
                 <div class="state"></div>
                 <div class="content">
                     <div class="name  d-flex justify-content-between">
-                        <sapn class="name">Mike</sapn>
+                        <span class="name">Mike</span>
                         <span class="dismiss">x</span>
                     </div>
                     <div class="last-message d-flex justify-content-between">
@@ -49,7 +53,7 @@
                 <div class="state"></div>
                 <div class="content">
                     <div class="name  d-flex justify-content-between">
-                        <sapn class="name">Mike</sapn>
+                        <span class="name">Mike</span>
                         <span class="dismiss">x</span>
                     </div>
                     <div class="last-message d-flex justify-content-between">
@@ -159,7 +163,8 @@
                         You can see my ability via any tasks quickly.
                         Do you have any projects perhaps?
                     </div>
-                </div><div class="chat-item other-user">
+                </div>
+                <div class="chat-item other-user">
                     <div class="name-time">
                         <span class="name">Mike</span>, <span class="date-time">2020-12-4 3:8:32</span>
                     </div>
@@ -273,144 +278,47 @@
                 <span class="name-ag">Mike (23) F</span>
                 <span class="badge badge-primary badge-pill state">o</span>
             </li>
-            <li class="list-group-item d-flex justify-content-between logged-in">
-                <span class="name-ag">Mike (23) M</span>
-                <span class="badge badge-primary badge-pill state">o</span>
-            </li><li class="list-group-item d-flex justify-content-between">
-                <span class="name-ag">Mike (23) M</span>
-                <span class="badge badge-primary badge-pill state">o</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between logged-in">
+            <li class="list-group-item d-flex justify-content-between logged-out">
                 <span class="name-ag">Mike (23) F</span>
-                <span class="badge badge-primary badge-pill state">o</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between logged-in">
-                <span class="name-ag">Mike (23) M</span>
                 <span class="badge badge-primary badge-pill state">o</span>
             </li>
             <li class="list-group-item d-flex justify-content-between logged-out">
                 <span class="name-ag">Mike (23) F</span>
                 <span class="badge badge-primary badge-pill state">o</span>
             </li>
-            <li class="list-group-item d-flex justify-content-between logged-in">
-                <span class="name-ag">Mike (23) M</span>
-                <span class="badge badge-primary badge-pill state">o</span>
-            </li><li class="list-group-item d-flex justify-content-between">
-                <span class="name-ag">Mike (23) M</span>
-                <span class="badge badge-primary badge-pill state">o</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between logged-in">
-                <span class="name-ag">Mike (23) F</span>
-                <span class="badge badge-primary badge-pill state">o</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between logged-in">
-                <span class="name-ag">Mike (23) M</span>
-                <span class="badge badge-primary badge-pill state">o</span>
-            </li>
             <li class="list-group-item d-flex justify-content-between logged-out">
                 <span class="name-ag">Mike (23) F</span>
-                <span class="badge badge-primary badge-pill state">o</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between logged-in">
-                <span class="name-ag">Mike (23) M</span>
-                <span class="badge badge-primary badge-pill state">o</span>
-            </li><li class="list-group-item d-flex justify-content-between">
-                <span class="name-ag">Mike (23) M</span>
-                <span class="badge badge-primary badge-pill state">o</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between logged-in">
-                <span class="name-ag">Mike (23) F</span>
-                <span class="badge badge-primary badge-pill state">o</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between logged-in">
-                <span class="name-ag">Mike (23) M</span>
-                <span class="badge badge-primary badge-pill state">o</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between logged-out">
-                <span class="name-ag">Mike (23) F</span>
-                <span class="badge badge-primary badge-pill state">o</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between logged-in">
-                <span class="name-ag">Mike (23) M</span>
-                <span class="badge badge-primary badge-pill state">o</span>
-            </li><li class="list-group-item d-flex justify-content-between">
-                <span class="name-ag">Mike (23) M</span>
-                <span class="badge badge-primary badge-pill state">o</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between logged-in">
-                <span class="name-ag">Mike (23) F</span>
-                <span class="badge badge-primary badge-pill state">o</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between logged-in">
-                <span class="name-ag">Mike (23) M</span>
-                <span class="badge badge-primary badge-pill state">o</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between logged-out">
-                <span class="name-ag">Mike (23) F</span>
-                <span class="badge badge-primary badge-pill state">o</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between logged-in">
-                <span class="name-ag">Mike (23) M</span>
-                <span class="badge badge-primary badge-pill state">o</span>
-            </li><li class="list-group-item d-flex justify-content-between">
-                <span class="name-ag">Mike (23) M</span>
-                <span class="badge badge-primary badge-pill state">o</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between logged-in">
-                <span class="name-ag">Mike (23) F</span>
-                <span class="badge badge-primary badge-pill state">o</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between logged-in">
-                <span class="name-ag">Mike (23) M</span>
-                <span class="badge badge-primary badge-pill state">o</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between logged-out">
-                <span class="name-ag">Mike (23) F</span>
-                <span class="badge badge-primary badge-pill state">o</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between logged-in">
-                <span class="name-ag">Mike (23) M</span>
-                <span class="badge badge-primary badge-pill state">o</span>
-            </li><li class="list-group-item d-flex justify-content-between">
-                <span class="name-ag">Mike (23) M</span>
-                <span class="badge badge-primary badge-pill state">o</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between logged-in">
-                <span class="name-ag">Mike (23) F</span>
-                <span class="badge badge-primary badge-pill state">o</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between logged-in">
-                <span class="name-ag">Mike (23) M</span>
-                <span class="badge badge-primary badge-pill state">o</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between logged-out">
-                <span class="name-ag">Mike (23) F</span>
-                <span class="badge badge-primary badge-pill state">o</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between logged-in">
-                <span class="name-ag">Mike (23) M</span>
-                <span class="badge badge-primary badge-pill state">o</span>
-            </li><li class="list-group-item d-flex justify-content-between">
-                <span class="name-ag">Mike (23) M</span>
-                <span class="badge badge-primary badge-pill state">o</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between logged-in">
-                <span class="name-ag">Mike (23) F</span>
-                <span class="badge badge-primary badge-pill state">o</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between logged-in">
-                <span class="name-ag">Mike (23) M</span>
-                <span class="badge badge-primary badge-pill state">o</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between logged-out">
-                <span class="name-ag">Mike (23) F</span>
-                <span class="badge badge-primary badge-pill state">o</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between logged-in">
-                <span class="name-ag">Mike (23) M</span>
                 <span class="badge badge-primary badge-pill state">o</span>
             </li>
         </ul>
+        <div class="who-with-chat">
+            <div class="who-item logged-in">
+                <div class="state"></div>
+                <div class="content">
+                    <div class="name  d-flex justify-content-between">
+                        <span class="name">Mike</span>
+                        <span class="dismiss">x</span>
+                    </div>
+                    <div class="last-message d-flex justify-content-between">
+                        <span class="last-message-content">how are you?</span>
+                        <span class="badge badge-primary badge-pill new-message-count">125</span>
+                    </div>
+                </div>
+            </div>
+            <div class="who-item logged-in">
+                <div class="state"></div>
+                <div class="content">
+                    <div class="name  d-flex justify-content-between">
+                        <span class="name">Mike</span>
+                        <span class="dismiss">x</span>
+                    </div>
+                    <div class="last-message d-flex justify-content-between">
+                        <span class="last-message-content">how are you?</span>
+                        <span class="badge badge-primary badge-pill new-message-count">125</span>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 

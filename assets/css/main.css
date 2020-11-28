@@ -248,13 +248,10 @@ button:hover {
   opacity: 1;
 }
 
-@media (max-width: 992px) {
-  .alert-validate::before {
-    visibility: visible;
-    opacity: 1;
-  }
+.alert-validate::before {
+  visibility: visible;
+  opacity: 1;
 }
-
 
 /*//////////////////////////////////////////////////////////////////
 [ Login more ]*/

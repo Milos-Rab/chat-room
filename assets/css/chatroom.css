@@ -88,14 +88,14 @@
     height: calc(100% - 10px);
     overflow-y: scroll;
 }
-.tabs .user-list .tab-item{
+.tabs .user-list .tab-item, .who-with-chat .who-item{
     height: 64px;
     width: 100%;
     padding: 8px;
     border-bottom: 1px solid #dfdfdf;
     cursor: pointer;
 }
-.tabs .user-list .tab-item:hover{
+.tabs .user-list .tab-item:hover, .who-with-chat .who-item:hover{
     background-color: #e2edfb;
 }
 .tabs .user-list .tab-item.active{
@@ -106,10 +106,11 @@
 .tabs .user-list .tab-item:first-child{
     border-top: 1px solid #dfdfdf;
 }
-.tabs .user-list  .tab-item .state, .tabs .tab-item .content{
+.tabs .user-list  .tab-item .state, .tabs .tab-item .content
+, .who-with-chat .who-item .state, .who-with-chat .who-item .content{
     float: left;
 }
-.tabs .user-list  .tab-item .state{
+.tabs .user-list  .tab-item .state,  .who-with-chat .who-item .state{
     width: 47px;
     height: 47px;
     border-radius: 50px;
@@ -118,12 +119,12 @@
     background-repeat: no-repeat;
     background-position: center center;
 }
-.tabs .user-list  .tab-item .content{
+.tabs .user-list  .tab-item .content, .who-with-chat .who-item .content{
     width: calc(100% - 47px);
     height: 47px;
 }
 
-.tabs .user-list .tab-item .content .name{
+.tabs .user-list .tab-item .content div.name, .who-with-chat .who-item .content div.name{
     width: 100%;
     height: 25px;
     line-height: 25px;
@@ -131,7 +132,13 @@
     font-weight: 500;
     padding-left: 4px;
 }
-.tabs .user-list .tab-item .content .last-message{
+.tabs .user-list .tab-item .content span.name, .who-with-chat .who-item .content span.name{
+    white-space: nowrap; 
+    width: calc(100% - 20px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.tabs .user-list .tab-item .content .last-message, .who-with-chat .who-item .content .last-message{
     width: 100%;
     height: 18px;
     line-height: 18px;
@@ -139,7 +146,16 @@
     padding-left: 4px;
     color: gray;
 }
-.tabs .user-list .tab-item .content .last-message .new-message-count{
+.tabs .user-list .tab-item .content .last-message .last-message-content
+, .who-with-chat .who-item .content .last-message .last-message-content{
+    white-space: nowrap; 
+    width: calc(100% - 20px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.tabs .user-list .tab-item .content .last-message .new-message-count
+, .who-with-chat .who-item .content .last-message .new-message-count{
     margin-right: 6px;
 }
 
@@ -194,7 +210,8 @@
   box-shadow: none;
 }
 .users .all-user-list{
-    max-height: calc(100% - 48px);
+    height: calc(100% - 178px);
+    max-height: calc(100% - 178px);
     overflow-y: scroll;
 }
 .users .all-user-list .list-group-item{
@@ -208,4 +225,8 @@
     background-color: #e2edfb;
     color: black;
     border-color: rgba(0,0,0,.125);
+}
+.users .who-with-chat{
+    height: 130px;
+    border-top: 1px solid rgba(0,0,0,.125);
 }
