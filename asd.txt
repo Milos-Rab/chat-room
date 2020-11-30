@@ -1,0 +1,9 @@
+Notice: Undefined index: name in E:\xampp\htdocs\chat_room\template\header.php on line 20
+
+Notice: Undefined index: age in E:\xampp\htdocs\chat_room\template\header.php on line 21
+
+Notice: Undefined index: gender in E:\xampp\htdocs\chat_room\template\header.php on line 22
+
+Notice: Undefined index: role_name in E:\xampp\htdocs\chat_room\template\header.php on line 24
+Welcome to Chat Room
+Male Female

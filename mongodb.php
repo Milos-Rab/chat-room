@@ -2,7 +2,9 @@
     $mongo_host = 'localhost';
     $mongo_port = 27017;
 
-    $manager = new MongoDB\Driver\Manager("mongodb://$mongo_host:$mongo_port/");
-    
-    var_dump($manager);
+    $mongodb = new MongoDB\Driver\Manager("mongodb://$mongo_host:$mongo_port/");
+
+    $mongodb_name="chat_room";
+    $collection_message = "messages";
+
 ?>

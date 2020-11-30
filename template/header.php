@@ -16,5 +16,12 @@
     <body>
         <div class="chat-pan">
             <div class="chat-header" style="background-color:#0070f3;">
-
+            <?php if(!empty($_SESSION)){ ?>        
+                <div class="user-profile">
+                    <span class="name"><?php echo $_SESSION['name']?></span>
+                    <span class="age"><?php echo $_SESSION['age']?></span>
+                    <span class="gender"><?php echo $_SESSION['gender']?></span>
+                    <span class="user_id" style="display:none;"><?php echo $_SESSION['user_id']?></span>
+                </div>
+                <?php }?>
             </div>

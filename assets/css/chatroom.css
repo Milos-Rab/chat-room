@@ -64,6 +64,7 @@
     width: 20px;
     cursor: pointer;
     text-align: center;
+    z-index: 9999;
 }
 .dismiss:hover{
     color: #0070f3;
@@ -83,34 +84,34 @@
 .logged-out .state{
     background-color: #646f79;
 }
-.tabs .user-list{
+.tabs .roommate-list{
     width: 100%;
     height: calc(100% - 10px);
-    overflow-y: scroll;
+    overflow-y: auto;
 }
-.tabs .user-list .tab-item, .who-with-chat .who-item{
+.tabs .roommate-list .roommate-list-item, .who-with-chat .who-item{
     height: 64px;
     width: 100%;
     padding: 8px;
     border-bottom: 1px solid #dfdfdf;
     cursor: pointer;
 }
-.tabs .user-list .tab-item:hover, .who-with-chat .who-item:hover{
+.tabs .roommate-list .roommate-list-item:hover, .who-with-chat .who-item:hover{
     background-color: #e2edfb;
 }
-.tabs .user-list .tab-item.active{
+.tabs .roommate-list .roommate-list-item.active{
     padding-right: 4px;
     border-right: 4px solid #0070f3;
     background-color: #e2edfb;
 }
-.tabs .user-list .tab-item:first-child{
+.tabs .roommate-list .roommate-list-item:first-child{
     border-top: 1px solid #dfdfdf;
 }
-.tabs .user-list  .tab-item .state, .tabs .tab-item .content
+.tabs .roommate-list  .roommate-list-item .state, .tabs .roommate-list-item .content
 , .who-with-chat .who-item .state, .who-with-chat .who-item .content{
     float: left;
 }
-.tabs .user-list  .tab-item .state,  .who-with-chat .who-item .state{
+.tabs .roommate-list  .roommate-list-item .state,  .who-with-chat .who-item .state{
     width: 47px;
     height: 47px;
     border-radius: 50px;
@@ -119,12 +120,12 @@
     background-repeat: no-repeat;
     background-position: center center;
 }
-.tabs .user-list  .tab-item .content, .who-with-chat .who-item .content{
+.tabs .roommate-list  .roommate-list-item .content, .who-with-chat .who-item .content{
     width: calc(100% - 47px);
     height: 47px;
 }
 
-.tabs .user-list .tab-item .content div.name, .who-with-chat .who-item .content div.name{
+.tabs .roommate-list .roommate-list-item .content div.name, .who-with-chat .who-item .content div.name{
     width: 100%;
     height: 25px;
     line-height: 25px;
@@ -132,13 +133,13 @@
     font-weight: 500;
     padding-left: 4px;
 }
-.tabs .user-list .tab-item .content span.name, .who-with-chat .who-item .content span.name{
+.tabs .roommate-list .roommate-list-item .content span.name, .who-with-chat .who-item .content span.name{
     white-space: nowrap; 
     width: calc(100% - 20px);
     overflow: hidden;
     text-overflow: ellipsis;
 }
-.tabs .user-list .tab-item .content .last-message, .who-with-chat .who-item .content .last-message{
+.tabs .roommate-list .roommate-list-item .content .last-message, .who-with-chat .who-item .content .last-message{
     width: 100%;
     height: 18px;
     line-height: 18px;
@@ -146,7 +147,7 @@
     padding-left: 4px;
     color: gray;
 }
-.tabs .user-list .tab-item .content .last-message .last-message-content
+.tabs .roommate-list .roommate-list-item .content .last-message .last-message-content
 , .who-with-chat .who-item .content .last-message .last-message-content{
     white-space: nowrap; 
     width: calc(100% - 20px);
@@ -154,14 +155,14 @@
     text-overflow: ellipsis;
 }
 
-.tabs .user-list .tab-item .content .last-message .new-message-count
+.tabs .roommate-list .roommate-list-item .content .last-message .new-message-count
 , .who-with-chat .who-item .content .last-message .new-message-count{
     margin-right: 6px;
 }
 
 .chat .chat-list{
     max-height: 100%;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 .chat-list .chat-item{
     max-width: 100%;
@@ -202,22 +203,34 @@
     background-color: #a9d1ff;
     border-radius: 8px 0 8px 8px;
 }
-
+roommate
 .send .message-sender{
     margin: 8px;
 }
 .form-control:focus{
   box-shadow: none;
 }
-.users .all-user-list{
+.users .room-user-list{
     height: calc(100% - 178px);
     max-height: calc(100% - 178px);
-    overflow-y: scroll;
+    overflow-y: auto;
 }
-.users .all-user-list .list-group-item{
+.users .room-user-list .list-group-item{
     padding:8px;
     font-size: 16px;
 }
+
+.users .room-user-list .list-group-item:hover{
+    cursor: pointer;
+    background-color: #e2edfb;
+}
+.users .room-user-list .list-group-item .name-ag{
+    white-space: nowrap; 
+    width: calc(100% - 20px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .users .list-group .list-group-item:last-child{
     border-bottom: 1px solid rgba(0,0,0,.125);
 }
@@ -230,3 +243,41 @@
     height: 130px;
     border-top: 1px solid rgba(0,0,0,.125);
 }
+
+.loader-container{
+    width: 100%;
+    height: 100%;
+    z-index: 99999;
+    background-color: rgba(0,0,0,.05);
+    position: relative;
+}
+.loader-container .loader {
+    border: 10px solid #dfdfdf;
+    border-radius: 50%;
+    border-top: 10px solid #3498db;
+    border-left: 10px solid #3498db;
+    border-bottom: 10px solid #3498db;
+    width: 50px;
+    height: 50px;
+    -webkit-animation: spin 2s linear infinite; /* Safari */
+    animation: spin 2s linear infinite;
+    margin: 0;
+    position: absolute;
+    top: calc(50% - 25px);
+    left: calc(50% - 25px);
+  }
+  
+  /* Safari */
+  @-webkit-keyframes spin {
+    0% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); }
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  .hidden{
+      display: none;
+  }
