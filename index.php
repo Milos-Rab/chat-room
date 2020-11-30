@@ -11,11 +11,14 @@
         $ip = $_SERVER['REMOTE_ADDR'];
     }
 
-    $query = "SELECT COUNT(*) AS `cnt` FROM `users` WHERE `ip_address`='".$ip."';";
-    $rs = $mysql_db->query($query);
-    $result = $rs->fetch_assoc();
+   
+    $stmt = $mysql_db->prepare('SELECT COUNT(*) AS `cnt` FROM `users` WHERE `ip_address`=?');
+    $stmt->bind_param('s', $ip);
+    $stmt->execute();
+    $rs = $stmt->get_result();
 
-    if($result['cnt']==="1"){
+    $result = $rs->fetch_assoc();
+    if($result['cnt']=="1"){
         $query1 = "SELECT users.id, users.name, users.user_id,users.age, users.gender, users.check_timeout, user_role.`role_name`, users.`ip_address`, users.`chat_room` FROM users, user_role WHERE users.`user_role`=user_role.`id` AND users.`ip_address`= '".$ip."';";
         //die($query1);
         $rs1 = $mysql_db->query($query1);
