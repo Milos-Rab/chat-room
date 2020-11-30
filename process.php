@@ -13,35 +13,51 @@ include './mongodb.php';
 switch($type){
 case 'GET_NEW_MESSAGES':
     
-    $filter = ["from"=>$active_roommate, "read"=>"none"];
+    $filter = ["from"=>$active_roommate, "to"=>$user_id, "read"=>"none"];
     $option = [];
     $read = new MongoDB\Driver\Query($filter, $option);
     $messages = $mongodb->executeQuery("$mongodb_name.$collection_message", $read);
 
     echoMongoDBReadResult($messages);
-    updateUnreadMessages($mongodb, $mongodb_name, $collection_message, $active_roommate);
+    updateUnreadMessages($mongodb, $mongodb_name, $collection_message, $user_id, $active_roommate);
 break;
 case 'ADD_NEW_MESSAGE':
-    $message_document = ["from"=>$user_id, "to"=>$active_roommate, "content"=>$message, "time"=>time(), "read"=>"none"];
-    $inserts = new MongoDB\Driver\BulkWrite();
+    if($message){
+        $message_document = ["from"=>$user_id, "to"=>$active_roommate, "content"=>"$message", "time"=>time(), "read"=>"none"];
+        $inserts = new MongoDB\Driver\BulkWrite();
 
-    $inserts->insert($message_document);
-    $mongodb->executeBulkWrite("$mongodb_name.$collection_message", $inserts);
+        $inserts->insert($message_document);
+        $mongodb->executeBulkWrite("$mongodb_name.$collection_message", $inserts);
 
-    $filter = ["from"=>$active_roommate, "read"=>"none"];
+        $filter = ["from"=>$active_roommate, "to"=>$user_id, "read"=>"none"];
+        $option = [];
+        $read = new MongoDB\Driver\Query($filter, $option);
+        $messages = $mongodb->executeQuery("$mongodb_name.$collection_message", $read);
+
+        echo "[";
+        echoMongoDBReadResult($messages);
+        echo ",".time()."]";
+        updateUnreadMessages($mongodb, $mongodb_name, $collection_message, $user_id, $active_roommate);
+    }
+break;
+case 'CHECK_NEW_MESSAGES':
+    $filter = ["to"=>$user_id, "read"=>"none"];
     $option = [];
     $read = new MongoDB\Driver\Query($filter, $option);
     $messages = $mongodb->executeQuery("$mongodb_name.$collection_message", $read);
-
-    echo "[";
     echoMongoDBReadResult($messages);
-    echo ",".time()."]";
-    updateUnreadMessages($mongodb, $mongodb_name, $collection_message, $active_roommate);
 break;
 case 'CHECK_OUT':
     $query = "UPDATE users SET `check_timeout`=CURRENT_TIMESTAMP WHERE `user_id`='".$user_id."';";
     $mysql_db->query($query);
 
+    $query ="SELECT user_id, TIME_TO_SEC(TIMEDIFF(CURRENT_TIMESTAMP, check_timeout)) AS timediff From users WHERE user_role<>1 AND user_id<>'".$user_id."';";
+    $res = $mysql_db->query($query);
+    $rows = array();
+    while($r = $res->fetch_assoc()){
+        $rows[]=$r;
+    }
+    echo json_encode($rows);
 break;
 case 'GET_ROOM_USERS':
     try{
@@ -85,7 +101,7 @@ case 'GET_ACTIVE_MESSAGES':
     $read = new MongoDB\Driver\Query($filter, $option);
     $messages = $mongodb->executeQuery("$mongodb_name.$collection_message", $read);
     echoMongoDBReadResult($messages);
-    updateUnreadMessages($mongodb, $mongodb_name, $collection_message, $active_roommate);
+    updateUnreadMessages($mongodb, $mongodb_name, $collection_message, $user_id, $active_roommate);
 break;
 case 'DISMISS_ROOMMATE':
     $query = "DELETE FROM roommate WHERE you='".$user_id."' AND roommate='".$roommate."';";
@@ -108,10 +124,10 @@ function echoMongoDBReadResult($messages){
     echo "]";
 }
 
-function updateUnreadMessages($mongodb, $mongodb_name, $collection_message, $active_roommate){
+function updateUnreadMessages($mongodb, $mongodb_name, $collection_message, $user_id, $active_roommate){
     $updates = new MongoDB\Driver\BulkWrite();
     $updates->update(
-        ['from' => $active_roommate, 'read' => 'none'],
+        ['$and'=>[['from' => $active_roommate], ['to'=>$user_id], ['read' => 'none']]],
         ['$set' => ['read' => 'yes']],
         ['multi' => true, 'upsert' => false]
     );

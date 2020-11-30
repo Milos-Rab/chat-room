@@ -1,8 +1,9 @@
 (function ($) {
     const LOGIN_TEST = 15000;
     const NEW_MESSAGE = 1000;
-    const NEW_USER = 60000;
-    const CHECK_OUT = 60000;
+    const NEW_USER = 10000;
+    const CHECK_OUT = 10000;
+    const CHECK_NEW_MESSAGE = 3000;
     const ROOMMATE_ITEM = $('<div class="roommate-list-item logged-out">'
                         + '<div class="state"></div>'
                         + '<div class="content">'
@@ -181,8 +182,8 @@
                 Object.assign(user_list, res);
                 user_list.map(item=>{
                     let $user_list_item = USER_LIST_ITEM.clone();
-                    if(item.role_name==="admin"){
-                        $user_list_item.addClass("admin");
+                    if(item.role_name=="admin"){
+                        $user_list_item.addClass("admin").removeClass("logged-out");
                     }
                     $user_list_item.attr("id", "user-"+item.user_id).find(".name-ag").text(item.name+" ("+item.age+") "+item.gender);
                     $user_list_item.appendTo(".room-user-list");
@@ -203,7 +204,10 @@
                 Object.assign(roommate_list, res);
                 roommate_list.map(item=>{
                     let $roommate_item = ROOMMATE_ITEM.clone();
-                    let user = user_list.filter(ul=>ul.user_id===item.roommate)[0];
+                    let user = user_list.filter(ul=>ul.user_id==item.roommate)[0];
+                    if(user.role_name=="admin"){
+                        $roommate_item.addClass("admin").removeClass("logged-out");
+                    }
                     $roommate_item.attr("id", "roommate-"+user.user_id).find("span.name").text(user.name);
                     $roommate_item.appendTo(".roommate-list");
                     $("#user-"+item.roommate).addClass("active");
@@ -213,27 +217,22 @@
         })
     }
     
-    // login test
-    setInterval(() => {
-        
-    }, LOGIN_TEST);
-
     // new message test
     setInterval(() => {
         if($(".roommate-list-item.active").attr("id")){
             id = $(".roommate-list-item.active").attr("id");
             active_roommate = id.split("-")[1];
             active_name = $(".roommate-list-item.active").find("span.name").text();
-            
             $.ajax({
                 url: "./process.php",
                 type: "post",
                 data: {type: "GET_NEW_MESSAGES", active_roommate: active_roommate},
                 dataType: "json",
                 success: function(res){
-
-                    addNewMessages(res, active_roommate, active_name);
-                    chatScrollBottom();
+                    if(res.length>0){
+                        addNewMessages(res, active_roommate, active_name);
+                        chatScrollBottom();
+                    }
                 }
             })
         }
@@ -244,15 +243,59 @@
         
     }, NEW_USER);
 
-    setInterval(()=>{
-        
+    function checkOut(){
         $.ajax({
             url:"./process.php",
             type:"POST",
             data:{type:"CHECK_OUT"},
+            dataType: "json",
             success: function(res){
+                res.map(item=>{
+                    if(item.timediff*1000>CHECK_OUT*1.5){
+                        $("#user-"+item.user_id).removeClass("logged-in");
+                        $("#user-"+item.user_id).addClass("logged-out");
+                        $("#roommate-"+item.user_id).removeClass("logged-in");
+                        $("#roommate-"+item.user_id).addClass("logged-out");
+                    }else{
+                        $("#user-"+item.user_id).removeClass("logged-out");
+                        $("#user-"+item.user_id).addClass("logged-in");
+                        $("#roommate-"+item.user_id).removeClass("logged-out");
+                        $("#roommate-"+item.user_id).addClass("logged-in");
+                    }
+                })
+            }
+        });
+    }
+    checkOut();
+    setInterval(checkOut, CHECK_OUT);
+    
+    // 
+    function checkNewMessages(){
+        $.ajax({
+            url: "./process.php",
+            type: "POST",
+            data: {type: "CHECK_NEW_MESSAGES"},
+            dataType: "json",
+            success: function(res){
+                
+                id = $(".roommate-list-item.active").attr("id");
+                active_roommate=null;
+                if(id){
+                    active_roommate = id.split("-")[1];
+                }
+                //console.log(res);
+                roommate_list.map((roommate=>{
+                    new_messages = res.filter(message=>message.from == roommate.roommate);
+                    if(new_messages.length!=0 && roommate!=active_roommate){
+                        $(".roommate-list-item#roommate-"+roommate.roommate).find(".new-message-count").text(new_messages.length);
+                        $("#user-"+roommate.roommate).find(".state").text(new_messages.length);
+                        
+                    }
+                }))
             }
         })
-    }, CHECK_OUT)
-
+    }
+    checkNewMessages();
+    setInterval(checkNewMessages, CHECK_NEW_MESSAGE);
+    
 })(jQuery);

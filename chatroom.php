@@ -1,10 +1,16 @@
 <?php
     session_start();
 
+
     if(empty($_SESSION)){
         header("Location: ./index.php");
     }
     include './template/header.php';
+    include './mysql.php';
+    
+    $query = "UPDATE users SET `check_timeout`=CURRENT_TIMESTAMP WHERE `user_id`='".$_SESSION["user_id"]."';";
+    $mysql_db->query($query);
+
     //var_dump($_SESSION);
     $page = "chatroom";
 ?>

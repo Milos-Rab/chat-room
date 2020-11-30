@@ -1,0 +1,9 @@
+1. install xampp and mongodb.
+2. https://learnedia.com/install-mongodb-configure-php-xampp-windows/
+	configure php mongodb
+3. load mysql database. username: root, password : 
+4. create mongodb database and collection: chat_room -> messages
+5. copy this folder to /xampp/htdocs
+6. in web browser, browse your url.
+
+enjoy.

@@ -191,6 +191,7 @@
     padding:8px 16px;
     line-height: 18px;
     font-size: 14px;
+    word-wrap: break-word;
 }
 .chat-list .chat-item.other-user .message{
     margin-right: 30%;
