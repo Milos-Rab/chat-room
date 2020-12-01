@@ -48,6 +48,7 @@
     $("form.message-sender").submit(function(event){
         event.preventDefault();
         message = $(this).find("input").val();
+        message = message.trim();
         $(this).find("input").val("");
         if($(".roommate-list-item.active").attr("id") && message){
             id = $(".roommate-list-item.active").attr("id");
