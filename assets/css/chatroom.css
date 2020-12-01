@@ -21,28 +21,33 @@
     height: calc(100vh - 80px);
     width: 100%;
 }
-.chat-container .users, .chat-container .tabs{
+
+.chat-container .users, .chat-container .tabs, .chat-container .chat-pan{
     height: 100%;
     max-height: 100%;
     float: left;
+    background-color: white;
 } 
-.chat-container .tabs{
-    width: 25vw;
-}
-
-.chat-container .users{
-    width: 20vw;
-}
-
 .chat-container .chat-pan{
-    width: 55vw;
-    height: 100%;
-    max-height: 100%;
     border-left: 1px solid #dfdfdf;
     border-right: 1px solid #dfdfdf;
-    float: left;
 }
+@media screen and (min-width: 62em){
+    .chat-container .tabs{
+        width: 25vw;
+    }
+    
+    .chat-container .users{
+        width: 20vw;
+    }
 
+    .chat-container .chat-pan{
+        width: 55vw;
+    }
+    .toggle-show{
+        display: none;
+    }
+}
 .chat-container .chat-pan .chat{
     width: 100%;
     height: calc(100% - 70px);
@@ -74,9 +79,14 @@
     height: 10px;
     width: 100%;
 }
-
+.male span.name, .male .name-ag{
+    color:#0070f3;
+}
+.female span.name, .female .name-ag{
+    color:#ce00f3;
+}
 .admin .state{
-    background-color: #ce00f3;
+    background-color: rgb(255, 136, 0);
 }
 .logged-in .state{
     background-color: #0070f3;
@@ -231,7 +241,9 @@ roommate
     overflow: hidden;
     text-overflow: ellipsis;
 }
-
+.users .room-user-list .list-group-item .state{
+    line-height: 17px;
+}
 .users .list-group .list-group-item:last-child{
     border-bottom: 1px solid rgba(0,0,0,.125);
 }
@@ -266,19 +278,123 @@ roommate
     position: absolute;
     top: calc(50% - 25px);
     left: calc(50% - 25px);
-  }
-  
-  /* Safari */
-  @-webkit-keyframes spin {
-    0% { -webkit-transform: rotate(0deg); }
-    100% { -webkit-transform: rotate(360deg); }
-  }
-  
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
+}
 
-  .hidden{
-      display: none;
-  }
+/* Safari */
+@-webkit-keyframes spin {
+0% { -webkit-transform: rotate(0deg); }
+100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+0% { transform: rotate(0deg); }
+100% { transform: rotate(360deg); }
+}
+
+.hidden{
+    display: none;
+}
+
+.toggle-show{
+    position: absolute;
+    width: 25px;
+    height: 60px;
+    top: calc(50% - 60px);
+    background-size: 25px 60px;
+    background-repeat: no-repeat;
+    background-position: center center;
+    display: none;
+    cursor: pointer;
+    z-index: 9999;
+}
+
+@media screen and (max-width: 62em){
+    .chat-container{
+        position: relative;
+    }
+    .chat-container .users{
+        position: absolute;
+        top: 0;
+        left: 100vw;
+        width:35vw;
+    }
+    .chat-container .users .toggle-show{
+        left: -25px;
+        display: block;
+        background-image: url('../images/left.png');
+    }
+    .chat-container .users.show{
+        left: 65vw;
+        border-left: 1px solid #dfdfdf;
+        z-index: 5;
+    }
+    .chat-container .users.show .toggle-show{
+        background-image: url('../images/right.png');
+        left: 0;
+    }
+    .chat-container .chat-pan{
+        width: 70vw;
+        position: absolute;
+        top: 0;
+        left: 30vw;
+    }
+    .chat-container .tabs{
+        position: absolute;
+        width: 30vw;
+        top: 0;
+        left: 0;
+    }
+    .chat-container .tabs .toggle-show{
+        display: none;
+    }
+}
+@media screen and (max-width: 48em){
+    .chat-container{
+        position: relative;
+    }
+    .chat-container .users{
+        position: absolute;
+        top: 0;
+        left: 100vw;
+        width:50vw;
+    }
+    .chat-container .users .toggle-show{
+        left: -25px;
+        display: block;
+        background-image: url('../images/left.png');
+    }
+    .chat-container .users.show{
+        left: 50vw;
+        border-left: 1px solid #dfdfdf;
+        z-index: 5;
+    }
+    .chat-container .users.show .toggle-show{
+        background-image: url('../images/right.png');
+    }
+    .chat-container .chat-pan{
+        width: 100vw;
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+    .chat-container .tabs{
+        position: absolute;
+        width: 50vw;
+        top: 0;
+        left: -50vw;
+    }
+    .chat-container .tabs .toggle-show{
+        left: 100%;
+        display: block;
+        background-image: url(../images/right.png);
+    }
+    .chat-container .tabs.show{
+        border-right: 1px solid #dfdfdf;
+        left: 0;
+        z-index: 5;
+    }
+    .chat-container .tabs.show .toggle-show{
+        left: calc(100% - 25px);
+        background-image: url(../images/left.png);
+    }
+}

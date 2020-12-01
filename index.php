@@ -16,19 +16,21 @@
     $stmt->bind_param('s', $ip);
     $stmt->execute();
     $rs = $stmt->get_result();
+    $stmt->close();
 
     $result = $rs->fetch_assoc();
     if($result['cnt']=="1"){
-        $query1 = "SELECT users.id, users.name, users.user_id,users.age, users.gender, users.check_timeout, user_role.`role_name`, users.`ip_address`, users.`chat_room` FROM users, user_role WHERE users.`user_role`=user_role.`id` AND users.`ip_address`= '".$ip."';";
-        //die($query1);
-        $rs1 = $mysql_db->query($query1);
+        $stmt1=$mysql_db->prepare('SELECT users.name, users.user_id, users.age, users.gender, users.check_timeout, users.`user_role`, users.`ip_address`, users.`chat_room` FROM users WHERE users.`ip_address`= ?');
+        $stmt1->bind_param('s', $ip);
+        $stmt1->execute();
+        $rs1 = $stmt1->get_result();
         $user = $rs1->fetch_assoc();
-        
+        $stmt1->close();
         $_SESSION['user_id'] = $user['user_id'];
         $_SESSION['name'] = $user['name'];
         $_SESSION['age'] = $user['age'];
         $_SESSION['gender'] = $user['gender'];
-        $_SESSION['role_name'] = $user['role_name'];
+        $_SESSION['user_role'] = $user['user_role'];
         $_SESSION['chat_room'] = $user['chat_room'];
 
         // var_dump($_SESSION); die("");
@@ -43,22 +45,26 @@
         extract($_POST);
         $t = microtime();
         $id=$username.$t;
-        $insert_query = "INSERT INTO `users`(`name`, `user_id`, `age`, `gender`, `ip_address`) VALUES('".$username."', MD5('".$id."'), ".$age.", '".$gender."', '".$ip."')";
-        if($mysql_db->query($insert_query)){
+        $current_time = time();
+        $insert_prepare = $mysql_db->prepare('INSERT INTO `users`(`name`, `user_id`, `age`, `gender`, `ip_address`, `created_date`, `check_timeout`) VALUES(?, MD5(?), ?, ?, ?, ?, ?)');
+        
+        $insert_prepare -> bind_param('ssissii', $username, $id, $age, $gender, $ip, $current_time, $current_time);
+        
+        if($insert_prepare->execute()){
 
             $last_id = $mysql_db->insert_id;
-            $select_query = "SELECT users.id, users.name, users.user_id,users.age, users.gender, users.check_timeout, user_role.`role_name`, users.`ip_address`, users.`chat_room` FROM users, user_role WHERE users.`user_role`=user_role.`id` AND users.`id`=".$last_id.";";
+            $select_query = "SELECT users.id, users.name, users.user_id,users.age, users.gender, users.check_timeout, user_role.`user_role`, users.`ip_address`, users.`chat_room` FROM users WHERE users.`id`=".$last_id.";";
 
             //die($query1);
-            $rs2 = $mysql_db->query($select_query);
-            $user2 = $rs2->fetch_assoc();
-            $_SESSION['user_id'] = $user2['user_id'];
-            $_SESSION['name'] = $user2['name'];
-            $_SESSION['age'] = $user2['age'];
-            $_SESSION['gender'] = $user2['gender'];
-            $_SESSION['role_name'] = $user2['role_name'];
-            $_SESSION['chat_room'] = $user2['chat_room'];
-            
+            if($rs2 = $mysql_db->query($select_query)){
+                $user2 = $rs2->fetch_assoc();
+                $_SESSION['user_id'] = $user2['user_id'];
+                $_SESSION['name'] = $user2['name'];
+                $_SESSION['age'] = $user2['age'];
+                $_SESSION['gender'] = $user2['gender'];
+                $_SESSION['user_role'] = $user2['role_name'];
+                $_SESSION['chat_room'] = $user2['chat_room'];
+            }
             //var_dump($_SESSION); die("");
             header("Location: ./chatroom.php");
         }

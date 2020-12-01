@@ -1,22 +1,23 @@
 <?php
     session_start();
 
-
     if(empty($_SESSION)){
         header("Location: ./index.php");
     }
     include './template/header.php';
     include './mysql.php';
+    $time=time();
+    $stmt = $mysql_db->prepare('UPDATE users SET `check_timeout`= ? WHERE `user_id`=?');
+    $stmt->bind_param('is', $time, $_SESSION["user_id"]);
+    $stmt->execute();
     
-    $query = "UPDATE users SET `check_timeout`=CURRENT_TIMESTAMP WHERE `user_id`='".$_SESSION["user_id"]."';";
-    $mysql_db->query($query);
-
     //var_dump($_SESSION);
     $page = "chatroom";
 ?>
 
 <div class="chat-container">
     <div class="tabs">
+        <div class="toggle-show" id="roommate-list-toggle"></div>
         <div class="user-search"></div>
         <div class="roommate-list">
             <div class="loader-container"><div class="loader"></div></div>
@@ -99,6 +100,7 @@
         </div>
     </div>
     <div class="users">
+        <div class="toggle-show" id="roommate-list-toggle"></div>
         <div class="input-group mt-1 mb-1">
             <input type="text" class="form-control" placeholder="search..." style="z-index:0">
             <div class="input-group-append">

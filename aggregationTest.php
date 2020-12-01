@@ -1,0 +1,6 @@
+<?php
+    include './mongodb.php';
+
+    
+
+?>
