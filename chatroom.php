@@ -2,7 +2,10 @@
     session_start();
 
     if(empty($_SESSION)){
+        ob_start();
         header("Location: ./index.php");
+        ob_flush();
+        die();
     }
     include './template/header.php';
     include './mysql.php';
