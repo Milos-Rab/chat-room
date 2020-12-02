@@ -26,7 +26,22 @@
                             + '<span class="name-ag"></span>'
                             + '<span class="badge badge-primary badge-pill state">0</span>'
                         + '</li>');
-    
+    toastr.options = {
+        'closeButton': true,
+        'debug': false,
+        'newestOnTop': false,
+        'progressBar': false,
+        'positionClass': 'toast-top-right',
+        'preventDuplicates': false,
+        'showDuration': '1000',
+        'hideDuration': '1000',
+        'timeOut': '5000',
+        'extendedTimeOut': '1000',
+        'showEasing': 'swing',
+        'hideEasing': 'linear',
+        'showMethod': 'fadeIn',
+        'hideMethod': 'fadeOut',
+    }
     const user_list = [];
     const roommate_list = [];
     
@@ -37,12 +52,21 @@
 
     $(".tabs .toggle-show").click(function(){
         $(".tabs").toggleClass("show");
-        $(".users").removeClass("show");
     })
 
     $(".users .toggle-show").click(function(){
         $(".users").toggleClass("show");
-        $(".tabs").removeClass("show");
+    })
+
+    $("#logout").click(function(){
+        $.ajax({
+            url: "./process.php",
+            type: "POST",
+            data: {type:"LOG_OUT"},
+            success: function(res){
+                window.location.assign("./");
+            }
+        })
     })
 
     $("form.message-sender").submit(function(event){
@@ -283,6 +307,8 @@
                 const new_roommate = res[1];
                 const new_messages = res[2];
                 update_user.map(uuser=>{
+                    
+                    
                     if(uuser.crt<CHECK_TIME/1000*1.9){
                         is_new_user = user_list.filter(item=>item.user_id==uuser.user_id);
                         if(is_new_user.length==0){
@@ -301,14 +327,27 @@
                             user_item.addClass("logged-in");
                             user_item.find(".name-ag").text(uuser.name+" ("+uuser.age+", "+uuser.gender+")");
                             user_item.appendTo(".room-user-list");
+                            
+                            var title = "New user( "+uuser.name+" ) logged in.";
+                            var $toast = toastr.info(title); // Wire up an event handler to a button in the 
                         }
                     }
                     if(uuser.cht<CHECK_TIME/1000*1.9){
+                        if($("#user-"+uuser.user_id).hasClass("logged-out")){
+                            var title = uuser.name+" logged in.";
+                            var $toast = toastr.success(title); // Wire up an event handler to a button in the 
+                        }
                         $("#user-"+uuser.user_id).removeClass("logged-out").addClass("logged-in");
                         $("#roommate-"+uuser.user_id).removeClass("logged-out").addClass("logged-in");
-                    }else{
+                    }
+                    if(uuser.cht>CHECK_TIME/1000*10){
+                        if($("#user-"+uuser.user_id).hasClass("logged-in")){
+                            var title = uuser.name+" logged out";
+                            var $toast = toastr.warning(title); // Wire up an event handler to a button in the 
+                        }
                         $("#user-"+uuser.user_id).removeClass("logged-in").addClass("logged-out");
                         $("#roommate-"+uuser.user_id).removeClass("logged-in").addClass("logged-out");
+                        
                     }
                 });
                 new_roommate.map(rmmate=>{

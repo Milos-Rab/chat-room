@@ -2,7 +2,10 @@
 session_start();
 
 if(empty($_POST) || empty($_SESSION)){
-    //header("Location: ./index.php");
+    ob_start();
+    header("Location: ./index.php");
+    ob_flush();
+    die();
 }
 extract($_SESSION);
 extract($_POST);
@@ -124,6 +127,8 @@ case 'DISMISS_ROOMMATE':
         echo 'success';
     }
 break;
+case 'LOG_OUT':
+    session_destroy();
 default:
     echo "type error";
 }
