@@ -92,11 +92,11 @@
 .female span.name, .female .name-ag{
     color:#ce00f3;
 }
-.admin .state{
-    background-color: rgb(255, 136, 0);
-}
 .logged-in .state{
     background-color: #0070f3;
+}
+.admin .state{
+    background-color: rgb(255, 136, 0);
 }
 .logged-out .state{
     background-color: #646f79;
@@ -299,7 +299,7 @@ roommate
 }
 
 .hidden{
-    display: none;
+    display: none !important;
 }
 
 .toggle-show{

@@ -22,7 +22,7 @@ case 'GET_UPDATE_DATA':
     $update_stmt->close();
     
     $time = time();
-    $user_stmt = $mysql_db->prepare("SELECT *,?-created_date AS crt,?-check_timeout as cht FROM users WHERE user_id<>? AND chat_room=?");
+    $user_stmt = $mysql_db->prepare("SELECT name, user_id, age, gender, user_role,?-created_date AS crt,?-check_timeout as cht FROM users WHERE user_id<>? AND chat_room=?");
     $user_stmt->bind_param('iisi',$time, $time, $user_id, $chat_room);
     $user_stmt->execute();
     $res_users = $user_stmt->get_result();
@@ -36,7 +36,7 @@ case 'GET_UPDATE_DATA':
     echo json_encode($users).",";
 
     $time = time();
-    $roommate_stmt = $mysql_db->prepare("SELECT roommate, ?-created_time as crt FROM roommate WHERE you=?");
+    $roommate_stmt = $mysql_db->prepare("SELECT roommate, is_new, ?-created_time as crt FROM roommate WHERE you=?");
     $roommate_stmt->bind_param('is', $time, $user_id);
     $roommate_stmt->execute();
     $res_roommate = $roommate_stmt->get_result();
@@ -56,7 +56,7 @@ case 'GET_UPDATE_DATA':
     updateUnreadMessages($mongodb, $mongodb_name, $collection_message, $user_id, $active_roommate);
 break;
 case 'GET_USER_DATA':
-    $stmt = $mysql_db->prepare('SELECT * FROM users WHERE user_id<>? AND chat_room= ?');
+    $stmt = $mysql_db->prepare('SELECT name, gender, user_id, age, user_role,check_timeout FROM users WHERE user_id<>? AND chat_room= ?');
     $stmt->bind_param('si', $user_id, $chat_room);
     $stmt->execute();
     $res = $stmt->get_result();
@@ -68,7 +68,7 @@ case 'GET_USER_DATA':
     
     echo "[",json_encode($users).",";
 
-    $stmt2=$mysql_db->prepare('SELECT roommate FROM roommate WHERE you=?');
+    $stmt2=$mysql_db->prepare('SELECT roommate, is_new FROM roommate WHERE you=?');
     $stmt2->bind_param('s',$user_id);
     $stmt2->execute();
     $res2 = $stmt2->get_result();
@@ -82,6 +82,11 @@ case 'GET_USER_DATA':
 break;
 case 'ADD_NEW_MESSAGE':
     if($message){
+
+        $stmt111 = $mysql_db->prepare("UPDATE roommate SET is_new='new' WHERE roommate=? AND you=?");
+        $stmt111->bind_param('ss', $active_roommate, $user_id);
+        $stmt111->execute();
+
         $message_document = ["from"=>$user_id, "to"=>$active_roommate, "content"=>"$message", "time"=>time(), "read"=>"none"];
         $inserts = new MongoDB\Driver\BulkWrite();
 
@@ -102,14 +107,12 @@ break;
 case 'ADD_ROOMMATE':
     if($user_id !== $roommate_id){
         $time = time();
-        $stmt1 = $mysql_db->prepare("INSERT INTO `roommate`(`you`, `roommate`, `room_id`, `created_time`) VALUES(?,?,?,?)");
-        $stmt1->bind_param('ssii', $user_id, $roommate_id, $chat_room, $time);
+        $stmt1 = $mysql_db->prepare("INSERT INTO `roommate`(`you`, `roommate`, `room_id`, `created_time`) SELECT ?,?,?,? FROM DUAL WHERE NOT EXISTS (SELECT * FROM roommate WHERE you=? AND roommate=?)");
+        $stmt1->bind_param('ssiiss', $user_id, $roommate_id, $chat_room, $time,$user_id,$roommate_id);
+        $stmt1->execute();
+        $stmt1->bind_param('ssiiss', $roommate_id, $user_id, $chat_room, $time,$roommate_id,$user_id);
         $stmt1->execute();
         $stmt1->close();
-        $stmt2 = $mysql_db->prepare("INSERT INTO `roommate`(`you`, `roommate`, `room_id`, `created_time`) SELECT ?,?,?,? FROM DUAL WHERE NOT EXISTS (SELECT * FROM roommate WHERE you=? AND roommate=?)");
-        $stmt2->bind_param('ssiiss', $roommate_id, $user_id, $chat_room, $time,$roommate_id,$user_id);
-        $stmt2->execute();
-        $stmt2->close();
         echo "success";
     }
 break;
@@ -126,6 +129,13 @@ case 'DISMISS_ROOMMATE':
     if($mysql_db->query($query)==TRUE){
         echo 'success';
     }
+break;
+case 'SET_READ':
+
+    $stmt111 = $mysql_db->prepare("UPDATE roommate SET is_new='seen' WHERE roommate=? AND you=?");
+    $stmt111->bind_param('ss', $user_id, $active_roommate);
+    $stmt111->execute();
+    echo "success";
 break;
 case 'LOG_OUT':
     session_destroy();

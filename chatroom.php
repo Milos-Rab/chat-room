@@ -104,12 +104,12 @@
     </div>
     <div class="users">
         <div class="toggle-show" id="roommate-list-toggle"></div>
-        <div class="input-group mt-1 mb-1">
+        <!-- <div class="input-group mt-1 mb-1">
             <input type="text" class="form-control" placeholder="search..." style="z-index:0">
             <div class="input-group-append">
                 <span class="input-group-text">@</span>
             </div>
-        </div>
+        </div> -->
         <ul class="list-group list-group-flush room-user-list">
             <div class="loader-container "><div class="loader"></div></div>
             <!-- <li class="list-group-item d-flex justify-content-between active admin">
