@@ -1,5 +1,6 @@
 (function ($) {
-    const CHECK_TIME = 1000;
+    const CHECK_TIME = 1000; // millisecond
+    const HIDE_TIME = 1800; // second
     var intervals = 0;
     const ROOMMATE_ITEM = $('<div class="roommate-list-item">'
                         + '<div class="state"></div>'
@@ -65,6 +66,9 @@
             data: {type:"LOG_OUT"},
             success: function(res){
                 window.location.assign("./");
+            },
+            error: function(er){
+                console.log(er);
             }
         })
     })
@@ -81,21 +85,24 @@
             
             $.ajax({
                 url: "./process.php",
-                type: "post",
+                type: "POST",
                 data: {type: "ADD_NEW_MESSAGE", active_roommate: active_roommate, message: message},
                 dataType: "json",
                 success: function(res){
+                    console.log(res);
                     messages = res[0];
                     time = res[1];
                     addNewMessages(messages, active_roommate, active_name);
-                    
                     var mi = CHAT_ITEM.clone();
                     mi.addClass("chat-item your-message").find(".name").text("You");                
-                    var dateString = formatDateTime(time*1000);
+                    var dateString = formatDateTime(time);
                     mi.find(".date-time").text(dateString);
                     mi.find(".message").text(message);
                     mi.appendTo(".chat-list");
                     chatScrollBottom();
+                },
+                error: function(er){
+                    console.log(er);
                 }
             })
         }
@@ -110,7 +117,7 @@
         logged = $(this).hasClass("logged-in");
         roommate = roommate_list.filter(item=>item.roommate===roommate_id);
 
-        if(roommate.length===0){
+        if(roommate.length==0){
             roommate_list.push({roommate:roommate_id});
             $.ajax({
                 url: "./process.php",
@@ -142,6 +149,9 @@
                         $("#user-"+roommate_id).addClass("active");
                         getActiveRoommateMessages();
                     }
+                },
+                error: function(er){
+                    console.log(er);
                 }
             })
         }
@@ -170,6 +180,9 @@
                         Object.assign(roommate_list, [], [...new_roommate]);
                         roommate_list.pop();
                     }
+                },
+                error: function(er){
+                    console.log(er);
                 }
             })
         }else{
@@ -178,7 +191,23 @@
             getActiveRoommateMessages();
         }
     })
-
+    $(".message-sender input").focus(function(){
+        id = $(".roommate-list-item.active").attr("id");
+        if(id){
+            active_roommate = id.split("-")[1];
+            console.log(active_roommate);
+            $.ajax({
+                url: "./process.php",
+                type: "POST",
+                data: {type:"SET_READ", active_roommate: active_roommate},
+                success: function(res){
+                },
+                error: function(er){
+                    console.log(er);
+                }
+            })
+        }
+    })
     function formatDateTime(mills){
         return new Date(mills*1000).toString().substring(0, 25);
     }
@@ -194,7 +223,7 @@
                 chat_item.find(".name").text("You");
             }
             
-            var dateString = formatDateTime(item.time*1000);
+            var dateString = formatDateTime(item.time);
 
             chat_item.find(".date-time").text(dateString);
             chat_item.find(".message").text(item.content);
@@ -221,6 +250,9 @@
                 addNewMessages(res, active_roommate, active_name);
                 chatScrollBottom();
                 intervals = setInterval(getUpdateData, CHECK_TIME);
+            },
+            error: function(er){
+                console.log(er);
             }
         })
     }
@@ -234,55 +266,68 @@
             data: {type:"GET_USER_DATA"},
             dataType:"json",
             success: function(res){
-                console.log(res);
                 Object.assign(user_list, res[0]);
-                Object.assign(roommate_list, res[1]);
                 time = res[2];
                 user_list.map(item=>{
-                    user_item = USER_LIST_ITEM.clone();
-                    user_item.attr("id", "user-"+item.user_id);
+                        user_item = USER_LIST_ITEM.clone();
+                        user_item.attr("id", "user-"+item.user_id);
 
-                    if(item.user_role=="admin"){
-                        user_item.addClass("admin");
-                    }
-                    if(item.gender=="Male"){
-                        user_item.addClass("male");
-                    }else if(item.gender=="Female"){
-                        user_item.addClass("female");
-                    }
-                    if(time-item.check_timeout<CHECK_TIME/1000*1.5){
-                        user_item.addClass("logged-in");
+                        if(item.user_role=="admin"){
+                            user_item.addClass("admin");
+                        }
+                        if(item.gender=="Male"){
+                            user_item.addClass("male");
+                        }else if(item.gender=="Female"){
+                            user_item.addClass("female");
+                        }
+                    if(time-item.check_timeout<HIDE_TIME){
+                        if(time-item.check_timeout<CHECK_TIME/1000*1.5){
+                            user_item.addClass("logged-in");
+                        }else{
+                        }
                     }else{
-                        user_item.addClass("logged-out");
+                        user_item.addClass("logged-out").addClass("hidden");
                     }
                     user_item.find(".name-ag").text(item.name+" ("+item.age+", "+item.gender+")");
                     user_item.appendTo(".room-user-list");
                 });
 
-                roommate_list.map(item=>{
-                    roommate_item = ROOMMATE_ITEM.clone();
-                    
+                Object.assign(roommate_list, res[1]);
+                roommate_list.map(item=>{                  
                     let roommate = user_list.find(user=>user.user_id==item.roommate);
-                    roommate_item.attr("id", "roommate-"+roommate.user_id);
-                    if(roommate.user_role=="admin"){
-                        roommate_item.addClass("admin");
+                    if(roommate){
+                        roommate_item = ROOMMATE_ITEM.clone();  
+                        roommate_item.attr("id", "roommate-"+roommate.user_id);
+                        if(roommate.user_role=="admin"){
+                            roommate_item.addClass("admin");
+                        }
+                        if(roommate.gender=="Male"){
+                            roommate_item.addClass("male");
+                        }else if(roommate.gender=="Female"){
+                            roommate_item.addClass("female");
+                        }
+                        if(time-roommate.check_timeout<CHECK_TIME/1000*1.5){
+                            roommate_item.addClass("logged-in");
+                        }else if(time-roommate.check_timeout<HIDE_TIME){
+                            roommate_item.addClass("logged-out");
+                        }else{
+                            roommate_item.addClass("logged-out").addClass("hidden");
+                        }
+                        if(item.is_new=="new"){
+                            roommate_item.find(".last-message-content").text("unread");
+                        }else if(item.is_new=="seen"){
+                            roommate_item.find(".last-message-content").text("seen");
+                        }
+                        roommate_item.find("span.name").text(roommate.name);
+                        roommate_item.appendTo(".roommate-list");
                     }
-                    if(roommate.gender=="Male"){
-                        roommate_item.addClass("male");
-                    }else if(roommate.gender=="Female"){
-                        roommate_item.addClass("female");
-                    }
-                    if(time-roommate.check_timeout<CHECK_TIME/1000*1.5){
-                        roommate_item.addClass("logged-in");
-                    }else{
-                        roommate_item.addClass("logged-out");
-                    }
-                    roommate_item.find("span.name").text(roommate.name);
-                    roommate_item.appendTo(".roommate-list");
                 });
                 $(".roommate-list .loader-container").addClass("hidden");
                 $(".room-user-list .loader-container").addClass("hidden");
                 intervals = setInterval(getUpdateData, CHECK_TIME);
+            },
+            error: function(er){
+                console.log(er);
             }
 
         })
@@ -295,20 +340,16 @@
             active_roommate = id.split("-")[1];
             active_name = $(".roommate-list-item.active").find("span.name").text();
         }
-        console.log("update data");
         $.ajax({
             url:'./process.php',
             type: "POST",
             data: {type:"GET_UPDATE_DATA", check_timeout:CHECK_TIME/1000*1.9, active_roommate: active_roommate},
             dataType: "json",
             success: function(res){
-                // console.log(res);
                 const update_user = res[0];
-                const new_roommate = res[1];
                 const new_messages = res[2];
                 update_user.map(uuser=>{
-                    
-                    
+
                     if(uuser.crt<CHECK_TIME/1000*1.9){
                         is_new_user = user_list.filter(item=>item.user_id==uuser.user_id);
                         if(is_new_user.length==0){
@@ -333,47 +374,65 @@
                         }
                     }
                     if(uuser.cht<CHECK_TIME/1000*1.9){
+
                         if($("#user-"+uuser.user_id).hasClass("logged-out")){
                             var title = uuser.name+" logged in.";
                             var $toast = toastr.success(title); // Wire up an event handler to a button in the 
                         }
+                        $("#user-"+uuser.user_id).removeClass("hidden");
+                        $("#roommate-"+uuser.user_id).removeClass("hidden");
                         $("#user-"+uuser.user_id).removeClass("logged-out").addClass("logged-in");
                         $("#roommate-"+uuser.user_id).removeClass("logged-out").addClass("logged-in");
                     }
-                    if(uuser.cht>CHECK_TIME/1000*10){
+                    if(uuser.cht>HIDE_TIME){
+                        if($("#user-"+uuser.user_id).hasClass("logged-out") && !$("#user-"+uuser.user_id).hasClass("hidden")){
+                            $("#user-"+uuser.user_id).addClass("hidden");
+                            $("#roommate-"+uuser.user_id).addClass("hidden");
+                            var title = uuser.name+" is inactivated";
+                            var $toastr = toastr.warning(title);
+                        }
+                    }else if(uuser.cht>CHECK_TIME/1000*10){
                         if($("#user-"+uuser.user_id).hasClass("logged-in")){
                             var title = uuser.name+" logged out";
                             var $toast = toastr.warning(title); // Wire up an event handler to a button in the 
                         }
                         $("#user-"+uuser.user_id).removeClass("logged-in").addClass("logged-out");
                         $("#roommate-"+uuser.user_id).removeClass("logged-in").addClass("logged-out");
-                        
                     }
                 });
-                new_roommate.map(rmmate=>{
+                
+                const roommate_state = res[1];
+                roommate_state.map(rmmate=>{
                     is_new_roommate = roommate_list.filter(item=>item.roommate==rmmate.roommate);
                     if(is_new_roommate.length==0){
                         roommate_list.push(rmmate);
-                        roommate_item = ROOMMATE_ITEM.clone();
                         
                         let roommate = user_list.find(user=>user.user_id==rmmate.roommate);
-
-                        roommate_item.attr("id", "roommate-"+roommate.user_id);
-                        if(roommate.user_role=="admin"){
-                            roommate_item.addClass("admin");
+                        if(roommate){
+                            roommate_item = ROOMMATE_ITEM.clone();
+                            roommate_item.attr("id", "roommate-"+roommate.user_id);
+                            if(roommate.user_role=="admin"){
+                                roommate_item.addClass("admin");
+                            }
+                            if(roommate.gender=="Male"){
+                                roommate_item.addClass("male");
+                            }else if(roommate.gender=="Female"){
+                                roommate_item.addClass("female");
+                            }
+                            if(time-roommate.check_timeout<CHECK_TIME/1000*1.5){
+                                roommate_item.addClass("logged-in");
+                            }else{
+                                roommate_item.addClass("logged-out");
+                            }
+                            roommate_item.find("span.name").text(roommate.name);
+                            roommate_item.appendTo(".roommate-list");
                         }
-                        if(roommate.gender=="Male"){
-                            roommate_item.addClass("male");
-                        }else if(roommate.gender=="Female"){
-                            roommate_item.addClass("female");
+                    }else{
+                        if(rmmate.is_new=="new"){
+                            $("#roommate-"+rmmate.roommate).find(".last-message-content").text("unread");
+                        }else if(rmmate.is_new=="seen"){
+                            $("#roommate-"+rmmate.roommate).find(".last-message-content").text("seen");
                         }
-                        if(time-roommate.check_timeout<CHECK_TIME/1000*1.5){
-                            roommate_item.addClass("logged-in");
-                        }else{
-                            roommate_item.addClass("logged-out");
-                        }
-                        roommate_item.find("span.name").text(roommate.name);
-                        roommate_item.appendTo(".roommate-list");
                     }
                 })
                 $(".room-user-list .list-group-item .state").text("0");
@@ -384,7 +443,7 @@
                         sender = user_list.find(item=>item.user_id==msage.from);
                         var mi = CHAT_ITEM.clone();
                         mi.addClass("chat-item other-user").find(".name").text(sender.name);                
-                        var dateString = formatDateTime(msage.time*1000);
+                        var dateString = formatDateTime(msage.time);
                         mi.find(".date-time").text(dateString);
                         mi.find(".message").text(msage.content);
                         mi.appendTo(".chat-list");
@@ -398,6 +457,9 @@
                     }
                 })
                 
+            },
+            error: function(er){
+                console.log(er);
             }
         })
     }
