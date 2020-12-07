@@ -450,10 +450,10 @@
                             $("#roommate-"+msage.from+" .new-message-count").text(i+1);
                         }
                     })
-                    c = document.getElementById("click_sound");
+                    c = document.getElementById("notification_sound");
                     c.play();
                 }
-                
+
                 message_state.map(stt=>{
                     let st;
                     if(stt.read=="none")

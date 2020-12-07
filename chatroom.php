@@ -112,7 +112,7 @@
         </div>
     </div>
 </div>
-<audio src="./assets/sound/click.mp3" id="click_sound"></audio>
+<audio src="./assets/sound/notification.mp3" id="notification_sound"></audio>
 
 <?php
     include './template/footer.php';
