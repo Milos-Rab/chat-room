@@ -10,31 +10,7 @@
     } else {
         $ip = $_SERVER['REMOTE_ADDR'];
     }
-  
-    // $stmt = $mysql_db->prepare('SELECT COUNT(*) AS `cnt` FROM `users` WHERE `ip_address`=?');
-    // $stmt->bind_param('s', $ip);
-    // $stmt->execute();
-    // $rs = $stmt->get_result();
-    // $stmt->close();
-
-    // $result = $rs->fetch_assoc();
-    // if($result['cnt']=="1"){
-    //     $stmt1=$mysql_db->prepare('SELECT users.name, users.user_id, users.age, users.gender, users.check_timeout, users.`user_role`, users.`ip_address`, users.`chat_room` FROM users WHERE users.`ip_address`= ?');
-    //     $stmt1->bind_param('s', $ip);
-    //     $stmt1->execute();
-    //     $rs1 = $stmt1->get_result();
-    //     $user = $rs1->fetch_assoc();
-    //     $stmt1->close();
-    //     $_SESSION['user_id'] = $user['user_id'];
-    //     $_SESSION['name'] = $user['name'];
-    //     $_SESSION['age'] = $user['age'];
-    //     $_SESSION['gender'] = $user['gender'];
-    //     $_SESSION['user_role'] = $user['user_role'];
-    //     $_SESSION['chat_room'] = $user['chat_room'];
-
-    //     header("Location: ./chatroom.php");
-    // }
-
+ 
     $page = "index/login";
 
     if(!empty($_POST)){

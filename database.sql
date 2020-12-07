@@ -39,14 +39,11 @@ CREATE TABLE `roommate` (
   `you` varchar(32) NOT NULL,
   `roommate` varchar(32) DEFAULT NULL,
   `room_id` int(11) DEFAULT NULL,
-  `is_new` varchar(5) DEFAULT 'seen',
   `created_time` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   FULLTEXT KEY `you` (`you`),
   FULLTEXT KEY `roommate` (`roommate`)
-) ENGINE=InnoDB AUTO_INCREMENT=413 DEFAULT CHARSET=utf8;
-
-/*Data for the table `roommate` */
+) ENGINE=InnoDB AUTO_INCREMENT=419 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `rooms` */
 
@@ -98,9 +95,7 @@ CREATE TABLE `users` (
   `chat_room` int(11) DEFAULT 1,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=95 DEFAULT CHARSET=utf8;
-
-/*Data for the table `users` */
+) ENGINE=InnoDB AUTO_INCREMENT=98 DEFAULT CHARSET=utf8;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
