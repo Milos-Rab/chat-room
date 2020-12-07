@@ -36,7 +36,7 @@ case 'GET_UPDATE_DATA':
     echo json_encode($users).",";
 
     $time = time();
-    $roommate_stmt = $mysql_db->prepare("SELECT roommate, is_new, ?-created_time as crt FROM roommate WHERE you=?");
+    $roommate_stmt = $mysql_db->prepare("SELECT roommate, ?-created_time as crt FROM roommate WHERE you=?");
     $roommate_stmt->bind_param('is', $time, $user_id);
     $roommate_stmt->execute();
     $res_roommate = $roommate_stmt->get_result();
@@ -52,7 +52,20 @@ case 'GET_UPDATE_DATA':
     $read = new MongoDB\Driver\Query($filter, $option);
     $messages = $mongodb->executeQuery("$mongodb_name.$collection_message", $read);
     echoMongoDBReadResult($messages);
-    echo "]";
+
+    $projection_filter = ['$and'=>[["from"=>$user_id], ["to"=>$active_roommate]]];
+    $projection_option = ["_id"=>1, "read"=>1];
+    $projection=new MongoDB\Driver\Query($projection_filter, $projection_option);
+    $states = $mongodb->executeQuery("$mongodb_name.$collection_message", $projection);
+
+    echo ",[";
+    $i=0;
+    foreach($states as $state){
+        if($i!=0) echo ",";
+        echo '{"id":"'.$state->_id.'","read":"'.$state->read.'"}';
+        $i++;
+    }
+    echo "]]";
     updateUnreadMessages($mongodb, $mongodb_name, $collection_message, $user_id, $active_roommate);
 break;
 case 'GET_USER_DATA':
@@ -68,7 +81,7 @@ case 'GET_USER_DATA':
     
     echo "[",json_encode($users).",";
 
-    $stmt2=$mysql_db->prepare('SELECT roommate, is_new FROM roommate WHERE you=?');
+    $stmt2=$mysql_db->prepare('SELECT roommate FROM roommate WHERE you=?');
     $stmt2->bind_param('s',$user_id);
     $stmt2->execute();
     $res2 = $stmt2->get_result();
@@ -83,24 +96,20 @@ break;
 case 'ADD_NEW_MESSAGE':
     if($message){
 
-        $stmt111 = $mysql_db->prepare("UPDATE roommate SET is_new='new' WHERE roommate=? AND you=?");
-        $stmt111->bind_param('ss', $active_roommate, $user_id);
-        $stmt111->execute();
-
-        $message_document = ["from"=>$user_id, "to"=>$active_roommate, "content"=>"$message", "time"=>time(), "read"=>"none"];
-        $inserts = new MongoDB\Driver\BulkWrite();
+        $message_document = ["_id"=>new MongoDB\BSON\ObjectId,"from"=>$user_id, "to"=>$active_roommate, "content"=>"$message", "time"=>time(), "read"=>"none"];
+        $inserts = new MongoDB\Driver\BulkWrite;
 
         $inserts->insert($message_document);
         $mongodb->executeBulkWrite("$mongodb_name.$collection_message", $inserts);
-
+        
         $filter = ['$and'=>[["from"=>$active_roommate], ["to"=>$user_id], ["read"=>"none"]]];
         $option = [];
         $read = new MongoDB\Driver\Query($filter, $option);
         $messages = $mongodb->executeQuery("$mongodb_name.$collection_message", $read);
 
-        echo "[";
+        echo "[";        
         echoMongoDBReadResult($messages);
-        echo ",".time()."]";
+        echo ",".time().",".json_encode($message_document["_id"])."]";
         updateUnreadMessages($mongodb, $mongodb_name, $collection_message, $user_id, $active_roommate);
     }
 break;
@@ -131,10 +140,16 @@ case 'DISMISS_ROOMMATE':
     }
 break;
 case 'SET_READ':
-
-    $stmt111 = $mysql_db->prepare("UPDATE roommate SET is_new='seen' WHERE roommate=? AND you=?");
-    $stmt111->bind_param('ss', $user_id, $active_roommate);
-    $stmt111->execute();
+    // $updates = new MongoDB\Driver\BulkWrite();
+    
+    // $updates->update(
+    //     ['$and'=>[['from' => $active_roommate], ['to'=>$user_id], ['state' => 'delivered']]],
+    //     ['$set' => ['read' => 'seen']],
+    //     ['multi' => true, 'upsert' => false]
+    // );
+    // $result = $mongodb->executeBulkWrite("$mongodb_name.$collection_message", $updates);
+    
+    updateUnreadMessages($mongodb, $mongodb_name, $collection_message, $user_id, $active_roommate);
     echo "success";
 break;
 case 'LOG_OUT':
@@ -148,7 +163,7 @@ function echoMongoDBReadResult($messages){
     $i=0;
     foreach($messages as $message){
         if($i!=0) echo ",";
-        echo '{"from":"'.$message->from.'","to":"'.$message->to.'","content":"'.$message->content.'","time":'.$message->time.'}';
+        echo '{"id":"'.$message->_id.'","from":"'.$message->from.'","to":"'.$message->to.'","content":"'.$message->content.'","time":'.$message->time.'}';
         $i++;
     }
     echo "]";

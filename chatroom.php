@@ -104,58 +104,15 @@
     </div>
     <div class="users">
         <div class="toggle-show" id="roommate-list-toggle"></div>
-        <!-- <div class="input-group mt-1 mb-1">
-            <input type="text" class="form-control" placeholder="search..." style="z-index:0">
-            <div class="input-group-append">
-                <span class="input-group-text">@</span>
-            </div>
-        </div> -->
         <ul class="list-group list-group-flush room-user-list">
             <div class="loader-container "><div class="loader"></div></div>
-            <!-- <li class="list-group-item d-flex justify-content-between active admin">
-                <span class="name-ag">Mike (23) M</span>
-                <span class="badge badge-primary badge-pill state">o</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between active logged-in">
-                <span class="name-ag">Mike (23) M</span>
-                <span class="badge badge-primary badge-pill state">o</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between active logged-out">
-                <span class="name-ag">Mike (23) F</span>
-                <span class="badge badge-primary badge-pill state">o</span>
-            </li> -->
         </ul>
         <div class="who-with-chat">
-            <div class="loader-container hidden"><div class="loader"></div></div>
-            <!-- <div class="who-item logged-in">
-                <div class="state"></div>
-                <div class="content">
-                    <div class="name  d-flex justify-content-between">
-                        <span class="name">Mike</span>
-                        <span class="dismiss">x</span>
-                    </div>
-                    <div class="last-message d-flex justify-content-between">
-                        <span class="last-message-content">how are you?</span>
-                        <span class="badge badge-primary badge-pill new-message-count">125</span>
-                    </div>
-                </div>
-            </div>
-            <div class="who-item logged-in">
-                <div class="state"></div>
-                <div class="content">
-                    <div class="name  d-flex justify-content-between">
-                        <span class="name">Mike</span>
-                        <span class="dismiss">x</span>
-                    </div>
-                    <div class="last-message d-flex justify-content-between">
-                        <span class="last-message-content">how are you?</span>
-                        <span class="badge badge-primary badge-pill new-message-count">125</span>
-                    </div>
-                </div>
-            </div> -->
+            <div class="loader-container hidden"><div class="loader"></div></div>            
         </div>
     </div>
 </div>
+<audio src="./assets/sound/click.mp3" id="click_sound"></audio>
 
 <?php
     include './template/footer.php';

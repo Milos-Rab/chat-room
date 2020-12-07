@@ -21,6 +21,7 @@
                                 + '<span class="name"></span>, <span class="date-time"></span>'
                             + '</div>'
                             + '<div class="message"></div>'
+                            + '<div class="read-state"></div>'
                         + '</div>');
 
     const USER_LIST_ITEM = $('<li class="list-group-item d-flex justify-content-between">'
@@ -89,12 +90,13 @@
                 data: {type: "ADD_NEW_MESSAGE", active_roommate: active_roommate, message: message},
                 dataType: "json",
                 success: function(res){
-                    console.log(res);
+
                     messages = res[0];
                     time = res[1];
+                    id=res[2].$oid;
                     addNewMessages(messages, active_roommate, active_name);
                     var mi = CHAT_ITEM.clone();
-                    mi.addClass("chat-item your-message").find(".name").text("You");                
+                    mi.addClass("chat-item your-message").attr("id",id).find(".name").text("You");                
                     var dateString = formatDateTime(time);
                     mi.find(".date-time").text(dateString);
                     mi.find(".message").text(message);
@@ -195,7 +197,6 @@
         id = $(".roommate-list-item.active").attr("id");
         if(id){
             active_roommate = id.split("-")[1];
-            console.log(active_roommate);
             $.ajax({
                 url: "./process.php",
                 type: "POST",
@@ -222,7 +223,7 @@
                 chat_item.addClass("your-message");
                 chat_item.find(".name").text("You");
             }
-            
+            chat_item.attr("id", item.id);
             var dateString = formatDateTime(item.time);
 
             chat_item.find(".date-time").text(dateString);
@@ -313,11 +314,6 @@
                         }else{
                             roommate_item.addClass("logged-out").addClass("hidden");
                         }
-                        if(item.is_new=="new"){
-                            roommate_item.find(".last-message-content").text("unread");
-                        }else if(item.is_new=="seen"){
-                            roommate_item.find(".last-message-content").text("seen");
-                        }
                         roommate_item.find("span.name").text(roommate.name);
                         roommate_item.appendTo(".roommate-list");
                     }
@@ -348,6 +344,7 @@
             success: function(res){
                 const update_user = res[0];
                 const new_messages = res[2];
+                const message_state = res[3];
                 update_user.map(uuser=>{
 
                     if(uuser.crt<CHECK_TIME/1000*1.9){
@@ -428,35 +425,43 @@
                             roommate_item.appendTo(".roommate-list");
                         }
                     }else{
-                        if(rmmate.is_new=="new"){
-                            $("#roommate-"+rmmate.roommate).find(".last-message-content").text("unread");
-                        }else if(rmmate.is_new=="seen"){
-                            $("#roommate-"+rmmate.roommate).find(".last-message-content").text("seen");
-                        }
                     }
                 })
                 $(".room-user-list .list-group-item .state").text("0");
                 $(".roommate-list .roommate-list-item .new-message-count").text("");
-                
-                new_messages.map(msage=>{
-                    if(msage.from==active_roommate){
-                        sender = user_list.find(item=>item.user_id==msage.from);
-                        var mi = CHAT_ITEM.clone();
-                        mi.addClass("chat-item other-user").find(".name").text(sender.name);                
-                        var dateString = formatDateTime(msage.time);
-                        mi.find(".date-time").text(dateString);
-                        mi.find(".message").text(msage.content);
-                        mi.appendTo(".chat-list");
-                        chatScrollBottom();
-                    }else{
-                        i = +$("#user-"+msage.from+" .state").text();
-                        $("#user-"+msage.from+" .state").text(i+1);
+
+                if(new_messages.length>0){
                         
-                        i = +$("#roommate-"+msage.from+" .new-message-count").text();
-                        $("#roommate-"+msage.from+" .new-message-count").text(i+1);
-                    }
-                })
+                    new_messages.map(msage=>{
+                        if(msage.from==active_roommate){
+                            sender = user_list.find(item=>item.user_id==msage.from);
+                            var mi = CHAT_ITEM.clone();
+                            mi.addClass("chat-item other-user").find(".name").text(sender.name);                
+                            var dateString = formatDateTime(msage.time);
+                            mi.find(".date-time").text(dateString);
+                            mi.find(".message").text(msage.content);
+                            mi.appendTo(".chat-list");
+                            chatScrollBottom();
+                        }else{
+                            i = +$("#user-"+msage.from+" .state").text();
+                            $("#user-"+msage.from+" .state").text(i+1);
+                            
+                            i = +$("#roommate-"+msage.from+" .new-message-count").text();
+                            $("#roommate-"+msage.from+" .new-message-count").text(i+1);
+                        }
+                    })
+                    c = document.getElementById("click_sound");
+                    c.play();
+                }
                 
+                message_state.map(stt=>{
+                    let st;
+                    if(stt.read=="none")
+                        st="delivered";
+                    else
+                        st="seen";
+                    $(".chat-item#"+stt.id).find(".read-state").text(st);
+                })
             },
             error: function(er){
                 console.log(er);
