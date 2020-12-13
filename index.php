@@ -30,7 +30,7 @@
             $_SESSION['user_role'] = $user['user_role'];
             $_SESSION['chat_room'] = $user['chat_room'];
             ob_start();
-            header("Location: ./chatroom.php");
+            header("Location: ./chatroom.php?id=".$chat_room);
             ob_flush();
             die();
         }else{

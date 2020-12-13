@@ -461,7 +461,7 @@
                         k++;
                     })
                 }
-                console.log(k, old_cnt);
+                
                 if(k>old_cnt){
                     c = document.getElementById("notification_sound");
                     c.play();
