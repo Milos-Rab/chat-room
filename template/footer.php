@@ -8,10 +8,15 @@
 ?>
 <script src="./assets/js/loginformvalidate.js"></script>
 <?php 
-    }else{
+    }else if($page==='chatroom'){
 ?>
     <script src="./assets/js/toastr.min.js"></script>
     <script src="./assets/js/chatroom.js"></script>
+<?php
+    }else{
+?>
+    <script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+    <script src="./assets/js/admin.js"></script>
 <?php
     }
 ?>

@@ -234,7 +234,6 @@
 
     function getActiveRoommateMessages(){
         clearInterval(intervals);
-        $(".chat-list").empty();
         $(".chat .loader-container").removeClass("hidden");
         id = $(".roommate-list-item.active").attr("id");
         active_roommate = id.split("-")[1];
@@ -245,6 +244,7 @@
             data: {type: "GET_ACTIVE_MESSAGES", active_roommate: active_roommate},
             dataType: "json",
             success: function(res){
+                $(".chat-list").empty();
                 $("#roommate-"+active_roommate).find(".new-message-count").text("");
                 $("#user-"+active_roommate).find(".state").text("0");
                 $(".chat .loader-container").addClass("hidden");

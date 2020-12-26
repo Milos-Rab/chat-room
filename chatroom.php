@@ -7,15 +7,57 @@
         ob_flush();
         die();
     }
-    include './template/header.php';
     include './mysql.php';
+    global $id;
+
+    extract($_GET);
+
+    if(!$id){
+        ob_start();
+        header("Location: ./chatroom.php?id=".$_SESSION['chat_room']);
+        ob_flush();
+        die();        
+    }else{
+        $room_stmt = $mysql_db->prepare("SELECT count(*) cnt FROM rooms WHERE id=?");
+        $room_stmt->bind_param('i', $id);
+        $room_stmt->execute();
+        $room_cnt=$room_stmt->get_result();
+        $cnt = $room_cnt->fetch_assoc();
+        if($cnt['cnt']==0){
+?>
+    <h1>There is no room(id=<?php echo htmlspecialchars($id);?>)</h1>
+    <p>will you go to other room <a href="./chatroom.php?id=<?php echo "".$_SESSION['chat_room'] ?>"><?php echo "".$_SESSION['chat_room'] ?></a></p>
+<?php
+            die();
+        }else{
+            $chat_room_stmt = $mysql_db->prepare("SELECT `chat_room` FROM users WHERE `user_id`=?");
+            $chat_room_stmt->bind_param('s', $_SESSION['user_id']);
+            $chat_room_stmt->execute();
+            $chat_room_res = $chat_room_stmt->get_result();
+            $user_chat_room = $chat_room_res->fetch_assoc();
+
+            if($id!=$user_chat_room['chat_room']){
+                $chat_room_update = $mysql_db->prepare("UPDATE users SET `chat_room`=? WHERE `user_id`=?");
+                $chat_room_update->bind_param('is', $id, $_SESSION['user_id']);
+                $chat_room_update->execute();
+                $_SESSION['chat_room']=$id;
+                ob_start();
+                header("Location: ./chatroom.php?id=".$id);
+                ob_flush();
+                die();    
+            }
+        }
+    }
+
     $time=time();
     $stmt = $mysql_db->prepare('UPDATE users SET `check_timeout`= ? WHERE `user_id`=?');
     $stmt->bind_param('is', $time, $_SESSION["user_id"]);
     $stmt->execute();
-    
+
+    $page = "chatroom";  
+    include './template/header.php';
+
     //var_dump($_SESSION);
-    $page = "chatroom";
 ?>
 
 <div class="chat-container">

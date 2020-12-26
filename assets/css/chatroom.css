@@ -92,14 +92,14 @@
 .female span.name, .female .name-ag{
     color:#ce00f3;
 }
+.state{
+    background-color: #646f79;
+}
 .logged-in .state{
     background-color: #0070f3;
 }
 .admin .state{
     background-color: rgb(255, 136, 0);
-}
-.logged-out .state{
-    background-color: #646f79;
 }
 .tabs .roommate-list{
     width: 100%;
@@ -410,4 +410,17 @@
         left: calc(100% - 25px);
         background-image: url(../images/left.png);
     }
+}
+
+.message-table-pan.loading{
+    position: relative;
+    top: calc(-100vh + 80px);
+}
+.m-content{
+    max-height: calc(100vh - 120px);
+    overflow-y: scroll;
+}
+
+table.dataTable tbody th, table.dataTable tbody td{
+    padding: 3px 10px;
 }
