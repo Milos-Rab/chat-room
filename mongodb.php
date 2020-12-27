@@ -7,6 +7,4 @@
     $mongodb_name="chat_room";
     $collection_message = "messages";
 
-    
-
 ?>

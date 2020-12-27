@@ -234,7 +234,6 @@
 
     function getActiveRoommateMessages(){
         clearInterval(intervals);
-        $(".chat-list").empty();
         $(".chat .loader-container").removeClass("hidden");
         id = $(".roommate-list-item.active").attr("id");
         active_roommate = id.split("-")[1];
@@ -245,6 +244,7 @@
             data: {type: "GET_ACTIVE_MESSAGES", active_roommate: active_roommate},
             dataType: "json",
             success: function(res){
+                $(".chat-list").empty();
                 $("#roommate-"+active_roommate).find(".new-message-count").text("");
                 $("#user-"+active_roommate).find(".state").text("0");
                 $(".chat .loader-container").addClass("hidden");
@@ -427,9 +427,17 @@
                     }else{
                     }
                 })
+
+                var old_cnt=0;
+                arr=$(".room-user-list .list-group-item .state");
+                for(i=0;i<arr.length;i++){
+                    old_cnt+=+$(arr[i]).text();
+                }
+
                 $(".room-user-list .list-group-item .state").text("0");
                 $(".roommate-list .roommate-list-item .new-message-count").text("");
 
+                var k=0;
                 if(new_messages.length>0){
                         
                     new_messages.map(msage=>{
@@ -448,12 +456,16 @@
                             
                             i = +$("#roommate-"+msage.from+" .new-message-count").text();
                             $("#roommate-"+msage.from+" .new-message-count").text(i+1);
+
                         }
+                        k++;
                     })
-                    c = document.getElementById("click_sound");
-                    c.play();
                 }
                 
+                if(k>old_cnt){
+                    c = document.getElementById("notification_sound");
+                    c.play();
+                }
                 message_state.map(stt=>{
                     let st;
                     if(stt.read=="none")
