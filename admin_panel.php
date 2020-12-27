@@ -130,7 +130,7 @@
                                 <?php func_userlist($user);?>
                             </select>
                         </label>
-                        <input type="date" id="start-date">~<input type="date" id="end-date">
+                        <input type="date" id="start-date" value="2020-01-01">~<input type="date" id="end-date">
 <?php
     function func_userlist($user){
 ?>
@@ -146,7 +146,7 @@
                     </div>
                     <table class="tablet table-striped " id="message_table">
                         <thead>
-                            <th><input type="checkbox"></th>
+                            <th><input id="check-all" type="checkbox"></th>
                             <th>From</th>
                             <th>To</th>
                             <th>Content</th>
@@ -154,7 +154,7 @@
                         </thead>
                     </table>
                     <div>
-                        <button class="btn btn-sm btn-danger" type="button">Delete</button>
+                        <button class="btn btn-sm btn-danger" id="delete-message" type="button">Delete</button>
                     </div>
                 </div>                    
             

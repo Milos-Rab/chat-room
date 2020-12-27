@@ -143,6 +143,16 @@ session_start();
         echo "]}";
 
         break;
+    case "DELETE_MESSAGE":
+
+        $bulk = new MongoDB\Driver\BulkWrite;       
+        foreach($checked_rows as $checked_row){
+            $bulk->delete(['_id' => new MongoDB\BSON\ObjectID($checked_row)], ['limit' => 1]);
+        }
+        $result = $mongodb->executeBulkWrite("$mongodb_name.$collection_message", $bulk);
+
+        echo "success";
+        break;
     default:
         echo "Type error.";
     }

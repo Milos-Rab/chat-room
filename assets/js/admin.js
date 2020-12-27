@@ -1,4 +1,57 @@
 $(function() {
+
+    var dates = {
+        convert:function(d) {
+            // Converts the date in d to a date-object. The input can be:
+            //   a date object: returned without modification
+            //  an array      : Interpreted as [year,month,day]. NOTE: month is 0-11.
+            //   a number     : Interpreted as number of milliseconds
+            //                  since 1 Jan 1970 (a timestamp) 
+            //   a string     : Any format supported by the javascript engine, like
+            //                  "YYYY/MM/DD", "MM/DD/YYYY", "Jan 31 2009" etc.
+            //  an object     : Interpreted as an object with year, month and date
+            //                  attributes.  **NOTE** month is 0-11.
+            return (
+                d.constructor === Date ? d :
+                d.constructor === Array ? new Date(d[0],d[1],d[2]) :
+                d.constructor === Number ? new Date(d) :
+                d.constructor === String ? new Date(d) :
+                typeof d === "object" ? new Date(d.year,d.month,d.date) :
+                NaN
+            );
+        },
+        compare:function(a,b) {
+            // Compare two dates (could be of any type supported by the convert
+            // function above) and returns:
+            //  -1 : if a < b
+            //   0 : if a = b
+            //   1 : if a > b
+            // NaN : if a or b is an illegal date
+            // NOTE: The code inside isFinite does an assignment (=).
+            return (
+                isFinite(a=this.convert(a).valueOf()) &&
+                isFinite(b=this.convert(b).valueOf()) ?
+                (a>b)-(a<b) :
+                NaN
+            );
+        },
+        inRange:function(d,start,end) {
+            // Checks if date in d is between dates in start and end.
+            // Returns a boolean or NaN:
+            //    true  : if d is between start and end (inclusive)
+            //    false : if d is before start or after end
+            //    NaN   : if one or more of the dates is illegal.
+            // NOTE: The code inside isFinite does an assignment (=).
+           return (
+                isFinite(d=this.convert(d).valueOf()) &&
+                isFinite(start=this.convert(start).valueOf()) &&
+                isFinite(end=this.convert(end).valueOf()) ?
+                start <= d && d <= end :
+                NaN
+            );
+        }
+    }
+
     var room_table=$("table#room_table").DataTable();
     var user_table=$("table#user_table").DataTable();
     var message_table=$("table#message_table").DataTable({
@@ -11,6 +64,18 @@ $(function() {
         ]
     });
     var ip_table=$("table#ip_table").DataTable();
+
+    $.fn.dataTable.ext.search.push(
+        function(settings, searchData, index, rowData, counter){
+            var start = new Date($("#start-date").val()+" 00:00:00");
+            var end = new Date($("#end-date").val()+" 23:59:59");
+            var date = new Date(searchData[4]);
+            console.log(start, end, date);
+            return dates.inRange(date, start, end);
+    })
+
+    var today = new Date();
+    $("#end-date").val(today.toISOString().substr(0, 10));
 
     $.ajax({
         url: "./admin_process.php",
@@ -167,22 +232,74 @@ $(function() {
     function formatDateTime(mills){
         return new Date(mills*1000).toLocaleString();//.substring(0, 25);
     }
-
+  
     $("select#message_from").change(function(){
         key = this.value;
         message_table.column(1).search(key).draw();
+        $("input[type=checkbox]#check-all").prop("checked", false);
+        message_check(false);
     })
 
     $("select#message_to").change(function(){
         key = this.value;
         message_table.column(2).search(key).draw();
+        $("input[type=checkbox]#check-all").prop("checked", false);
+        message_check(false);        
     })
 
-    $("#start-date").change(function(){
-        console.log(moment($('#beginDate').val(), "DD.MM.YYYY"));
+    $("#start-date,#end-date").change(function(){
+        message_table.draw();
     })
 
-    $("#end-date").change(function(){
 
+    $("input[type=checkbox]#check-all").on('click',function(e){
+        const t = $(this).prop("checked");
+        message_check(t);
     })
+
+    function message_check(t){
+        rows=message_table.rows( { filter : 'applied'} ).nodes();
+        if(t){
+            rows.map(row=>{
+                check = $(row).find("td input[type=checkbox]").prop("checked", true);
+            })
+        }else{
+            rows.map(row=>{
+                check = $(row).find("td input[type=checkbox]").prop("checked", false);
+            })
+        }
+    }
+
+    $("button#delete-message").on('click', function(){
+        checked_rows = [];
+        rows=message_table.rows( { filter : 'applied'} ).nodes();
+        rows.map(row=>{
+            check = $(row).find("td input[type=checkbox]").prop("checked");
+            if(check){
+                checked_rows.push($(row).attr("id"));
+            }
+        })
+        if(checked_rows.length!=0){
+            
+            $("#v-pills-messages .loader-container").removeClass("hidden");
+            $(".message-table-pan").addClass("loading");
+            $.ajax({
+                url: "./admin_process.php",
+                type: "POST",
+                data:{type:"DELETE_MESSAGE", checked_rows: checked_rows},
+                success: function(res){
+                    if(res=="success"){
+                        checked_rows.map(checked=>{
+                            message_table.row("#"+checked).remove();
+                        })
+                        message_table.draw();
+                        
+                        $("#v-pills-messages .loader-container").addClass("hidden");
+                        $(".message-table-pan").removeClass("loading");
+                    }
+                }
+            })
+        }
+    })
+
 });
